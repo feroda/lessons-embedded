@@ -49,6 +49,7 @@
   - cat, less, head, tail, grep, find
   - nano, vim
   - chown, chmod
+  - cat /etc/fstab
 * Gestore Pacchetti
   - dpkg, apt-get, apt-cache
   - installare lxde, xfce4, screen, lynx
@@ -76,26 +77,22 @@
   - /etc/network/interfaces
   - /etc/rc.local
 * man: init , runlevel, interfaces, bootparam
+* Connessione di un giroscopio tramite I2C
+  - caricamento dei moduli al boot
+  - avvio della lettura dati e visualizzazione su console (e.g: /dev/tty8)
 
-
-
-
-## Lezione 4 - Sviluppo di un software di rete per recupero e visualizzazione dati (7 ore)
-
-* Client di rete:
-  - telnet, netcat
-  - curl, wget
-* Python: un linguaggio semplice e flessibile
-  - interrogazione di una API
-  - scrittura di un file CSV
-  - invio mail: con problematiche del Far West SMTP
-* RDBMS SQLite: semplici e veloci archivi relazionali
-  - strutturazione dei dati ricevuti
-* Application server in python per visualizzare via web i risultati
-
-## Lezione 4 - Il kernel e i moduli, struttura e compilazione (7 ore)
+## Lezione 4 - Il kernel e i moduli, struttura e compilazione (7 ore) - bozza
 
 * I ruoli del kernel, driver (moduli) e firmware
+* Connettere la seriale
+  - usbserial, ftdi_sio
+  - Visualizzazione e caricamento dei moduli: lsmod, modinfo, modprobe
+* Montare una directory dell'host di sviluppo come rootfs (nfsroot)
+  - dwc_otg.lpm_enable=0 console=ttyAMA0,115200 console=tty1 root=/dev/nfs rootfstype=nfs elevator=deadline fsck.repair=no rootwait ip=10.0.0.10:10.0.0.1:10.0.0.1:255.255.255.0:raspy:eth0:off nfsroot=10.0.0.1:/usr/local/buildroot/output/target
+* Root filesystem: file di configurazione specifici
+  - /etc/fstab
+  - /etc/hosts
+
 * L'albero dei sorgenti del kernel: inizializzazione, architetture e moduli
 * Ricompilazione del kernel
 * Caricamento dinamico dei moduli
@@ -120,3 +117,16 @@
 * GITHub, Bitbucket, Gitlab, Gogs per gestire lo sviluppo in un team
 
 * Questionario di verifica
+
+## Lezione 4 - Sviluppo di un software di rete per recupero e visualizzazione dati (7 ore)
+
+* Client di rete:
+  - telnet, netcat
+  - curl, wget
+* Python: un linguaggio semplice e flessibile
+  - interrogazione di una API
+  - scrittura di un file CSV
+  - invio mail: con problematiche del Far West SMTP
+* RDBMS SQLite: semplici e veloci archivi relazionali
+  - strutturazione dei dati ricevuti
+* Application server in python per visualizzare via web i risultati
