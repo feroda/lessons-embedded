@@ -1,0 +1,6 @@
+config EXAMPLES
+    tristate "Enable Examples"
+    default M
+    help
+      Enable compilation option for driver examples
+
