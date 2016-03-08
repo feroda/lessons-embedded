@@ -27,7 +27,7 @@ static ssize_t hello_write(struct file *file, const char *buf,
                 size_t count, loff_t * ppos)
 {
     printk("hello_write: accepting zero bytes\n");
-    return 0;
+    return count;
 }
 static int hello_ioctl(struct inode *inode, struct file *file,
                 unsigned int cmd, unsigned long arg)
