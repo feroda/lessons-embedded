@@ -14,7 +14,13 @@ __attribute__((section(".gnu.linkonce.this_module"))) = {
 	.arch = MODULE_ARCH_INIT,
 };
 
-MODULE_INFO(intree, "Y");
+static const struct modversion_info ____versions[]
+__used
+__attribute__((section("__versions"))) = {
+	{ 0xc3193345, __VMLINUX_SYMBOL_STR(module_layout) },
+	{ 0xd48cb9fd, __VMLINUX_SYMBOL_STR(param_ops_int) },
+	{ 0x27e1a049, __VMLINUX_SYMBOL_STR(printk) },
+};
 
 static const char __module_depends[]
 __used

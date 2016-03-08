@@ -10,9 +10,32 @@
     - **arch/**: le architetture
     - **init/main.c**: `try_to_run_init_process` per l'esecuzione del processo init (PID 1)
 
-# Compilazione del kernel
+## La via comoda
+    * Le distribuzioni forniscono immagini del kernel precompilate, ma ... generiche
+    * Gli sviluppatori pubblicano i propri pacchetti kernel da installare
+    * Le distribuzioni hanno il proprio sistema di build per creare il kernel della loro distribuzione
+
+## La via dell'illuminazione: http://www.kernel.org
+
+### Configurazione del kernel
+    * .config -> quante opzioni di configurazione ci sono nel kernel?
     * make defconfig
-    * .config
+    * make menuconfig o make nconfig o make gconfig o make xconfig
+### Compilazione del kernel (ref: https://wiki.archlinux.org/index.php/Kernels/Compilation/Traditional#Compile)
+    * make -j2 bzImage modules
+    * make modules_install
+    * cp -v arch/x86/boot/bzImage /boot/vmlinuz-YourKernelName
+    * mkinitcpio -k FullKernelName -c /etc/mkinitcpio.conf -g /boot/initramfs-YourKernelName.img
+    * consentire al bootloader di caricare il kernel
+### Integrare un proprio modulo nel kernel
+    * Creare una directory (i.e: drivers/char/examples)
+    * Creare il modulo `hello.c`
+    * Estendere `Makefile` e `Kconfig` della parent directory (i.e: drivers/char/)
+    * Creare i propri `Makefile` e `Kconfig`
+    * Compilare con `make M=drivers/char/examples`
+    * Inserire il modulo con `insmod`
+    * Copiarlo nella directory di default di tutti i moduli
+    * Usare `modprobe`
 
 # Crosscompilazione del kernel
   - Toolchain: compiler, linker, libraries, debugger
@@ -36,5 +59,3 @@
 
 # ARM
   - Linux su ARM: https://wiki.linaro.org/FrontPage
-
-

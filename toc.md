@@ -84,6 +84,15 @@
 ## Lezione 4 - Il kernel e i moduli, struttura e compilazione (7 ore) - bozza
 
 * I ruoli del kernel, driver (moduli) e firmware
+* L'albero dei sorgenti del kernel: inizializzazione, architetture e moduli
+* Ricompilazione del kernel
+  - .config
+* Caricamento dinamico dei moduli
+* Realizzazione del modulo HelloWorld
+* Compilazione e caricamento
+
+## Lezione 5 - Buildroot: la creazione di un filesystem da 0 (7 ore) - bozza
+
 * Connettere la seriale
   - usbserial, ftdi_sio
   - Visualizzazione e caricamento dei moduli: lsmod, modinfo, modprobe
@@ -92,14 +101,6 @@
 * Root filesystem: file di configurazione specifici
   - /etc/fstab
   - /etc/hosts
-
-* L'albero dei sorgenti del kernel: inizializzazione, architetture e moduli
-* Ricompilazione del kernel
-* Caricamento dinamico dei moduli
-* Realizzazione del modulo HelloWorld
-* Compilazione e caricamento
-
-## Lezione 5 - Buildroot: la creazione di un filesystem da 0 (7 ore)
 
 * La mia architettura e la crosscompilazione
 * Il mio kernel
