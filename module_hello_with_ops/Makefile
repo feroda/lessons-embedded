@@ -1,1 +1,1 @@
-obj-$(CONFIG_EXAMPLES) += hello1.o
+obj-$(CONFIG_EXAMPLES) += hello1_with_ops.o
