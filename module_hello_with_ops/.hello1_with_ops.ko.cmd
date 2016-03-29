@@ -1,0 +1,1 @@
+cmd_drivers/char/examples/hello1_with_ops.ko := ld -r -m elf_x86_64 -T ./scripts/module-common.lds --build-id  -o drivers/char/examples/hello1_with_ops.ko drivers/char/examples/hello1_with_ops.o drivers/char/examples/hello1_with_ops.mod.o
