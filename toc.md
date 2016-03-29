@@ -81,7 +81,7 @@
   - caricamento dei moduli al boot
   - avvio della lettura dati e visualizzazione su console (e.g: /dev/tty8)
 
-## Lezione 4 - Il kernel e i moduli, struttura e compilazione (7 ore) - bozza
+## Lezione 4 - Il kernel e i moduli, struttura e compilazione (7 ore)
 
 * I ruoli del kernel, driver (moduli) e firmware
 * L'albero dei sorgenti del kernel: inizializzazione, architetture e moduli
@@ -91,35 +91,76 @@
 * Realizzazione del modulo HelloWorld
 * Compilazione e caricamento
 
-## Lezione 5 - Buildroot: la creazione di un filesystem da 0 (7 ore) - bozza
+Risposte alle domande precedenti:
+* Il parametro 'bs' del comando 'dd' legge al più bs BYTES
+* initrd vs initramfs -> https://wiki.ubuntu.com/Initramfs
 
-* Connettere la seriale
-  - usbserial, ftdi_sio
-  - Visualizzazione e caricamento dei moduli: lsmod, modinfo, modprobe
-* Montare una directory dell'host di sviluppo come rootfs (nfsroot)
-  - dwc_otg.lpm_enable=0 console=ttyAMA0,115200 console=tty1 root=/dev/nfs rootfstype=nfs elevator=deadline fsck.repair=no rootwait ip=10.0.0.10:10.0.0.1:10.0.0.1:255.255.255.0:raspy:eth0:off nfsroot=10.0.0.1:/usr/local/buildroot/output/target
-* Root filesystem: file di configurazione specifici
+## Lezione 5 - Creare un filesystem root da 0 (7 ore)
+
+
+* Alcune possibilità:
+  - [Buildroot](https://buildroot.org)
+  - [Deboostrap/Multistrap](https://wiki.debian.org/EmDebian/CrossDebootstrap)
+  - [Ubuntu-core](https://wiki.ubuntu.com/Core)
+* Guide:
+  - [Linux From Scratch](http://linuxfromscratch.org) - dal silicio in su
+  - [Mini guida TLDP](http://www.tldp.org/HOWTO/Bootdisk-HOWTO/buildroot.html)
+
+* rootfs debootstrap --foreign
+* rootfs buildroot crosscompilato
+* Mount del root filesystem via nfs
+  * il kernel deve essere abilitato con l'opzione NFSroot
+  * Usare questo cmdline.txt: `dwc_otg.lpm_enable=0 console=ttyAMA0,115200 console=tty1 root=/dev/nfs rootfstype=nfs elevator=deadline fsck.repair=no rootwait ip=10.0.0.10:10.0.0.1:10.0.0.1:255.255.255.0:raspy:eth0:off nfsroot=10.0.0.1:/usr/local/buildroot/output/target`
+
+* Personalizzazioni di base:
   - /etc/fstab
   - /etc/hosts
 
-* La mia architettura e la crosscompilazione
-* Il mio kernel
-* BusyBox e le mie applicazioni di base
-* Init BusyBox o SystemV
-* I miei script di init
-* Preparazione dell'immagine e scrittura su SD
+### Eseguire il nostro root filesystem con qemu-system-arm
 
-## Lezione 6 - debug, sviluppo in team e consigli pratici (6 ore)
+* Scaricare kernel,initrd e iso da https://people.debian.org/~aurel32/qemu/armel/ e poi
+  * qemu-system-arm -M versatilepb -kernel vmlinuz-3.2.0-4-versatile -initrd initrd.img-3.2.0-4-versatile -hda debian_wheezy_armel_standard.qcow2 -append "root=/dev/sda1" -m 512
+* Per eseguire il nostro root filesystem creato con `debootstrap --arch=armel --foreign`:
+    * qemu-system-arm -M versatilepb -kernel vmlinuz-3.2.0-4-versatile -initrd initrd.img-3.2.0-4-versatile -hda myforeignrootfs-wheezy.img -append "root=/dev/sda init=/bin/sh rw" -m 512
+    * *attenzione che in questo caso root=/dev/sda senza numero di partizione perché il valore di "-hda" è in realtà una partizione e non un intero disco*
+    * al prompt eseguire `debootstrap/debootstrap --second-stage`
+    * una volta concluso si può eseguire il nostro sistema ARM con
+    qemu-system-arm -M versatilepb -kernel vmlinuz-3.2.0-4-versatile -initrd initrd.img-3.2.0-4-versatile -hda myforeignrootfs-wheezy.img -append "root=/dev/sda" -m 512
 
-[NOTA: è probabile che dovremo recuperare altre lezioni]
+### Creare un rootfs per Raspberry
 
-* Tool di debug: gdb, strace, mtrace, ...
-* Git e workflow di programmazione
-* GITHub, Bitbucket, Gitlab, Gogs per gestire lo sviluppo in un team
+* Seguire le informazioni qui: http://elinux.org/Raspbian
+* Viene usato debootstrap con --arch=armhf --foreign e repository custom raspbian
+
+## Lezione 6 - Sviluppo di un software di rete per recupero e visualizzazione dati (7 ore)
 
 * Questionario di verifica
 
-## Lezione 4 - Sviluppo di un software di rete per recupero e visualizzazione dati (7 ore)
+* Come possiamo esporre funzionalità all'esterno?
+* Struttura di un'applicazione web
+  - `web console`: un'applicazione web di esempio
+  - `web gyroscope`:
+* Monitorare
+
+### Diversi web servers, differenti caratteristiche
+  * apache2: il colosso, supporto estensivo e configurabilità a tutto, moltissimi moduli
+  * nginx: veloce, soprattutto file statici + proxy, molto di moda
+  * lighttpd: il nano, estendibile semplicemente
+  * cherokee: veloce, scritto in python, ottima (ed educativa) interfaccia web di configurazione
+  * Benchmark semplice: http://wiki.dreamhost.com/Web_Server_Performance_Comparison
+  * Benchmark articolato (complicato): https://www.techempower.com/benchmarks/
+  * Consiglio estensione Firefox Wappalyzer
+
+### Diversi database, differenti caratteristiche
+  * RDBMS:
+    * sqlite3: minimale, file-based, attenzione ai lock
+    * mysql/mariadb: veloce, diffusissimo, di base non un RDBMS
+    * postgresql: il colosso, un framework per RDBMS, il più "pulito"
+  * Database per serie temporali
+    * Round Robin Database (RRD): storico molto usato http://oss.oetiker.ch/rrdtool/gallery/index.en.html
+    * Whisper: evoluzione di RRD, poco usato, ma interessante la possibilità di modificare la storia
+    * Influxdb: moderno, potente, linguaggio simile a SQL
+
 
 * Client di rete:
   - telnet, netcat
